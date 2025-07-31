@@ -1479,6 +1479,114 @@
     padding: 10px 25px;
   }
 }
+
+.site-footer {
+  background-color: rgba(243, 247, 250, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 40px 20px 20px;
+  font-family: 'Arial', sans-serif;
+  color: #2D2A55;
+  border-top: 1px solid #d9e0e8;
+  margin-top: 80px;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.footer-logo img {
+  height: 50px;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.05));
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-links a {
+  color: #2D2A55;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #353359;
+}
+
+.footer-socials a {
+  margin-left: 15px;
+  color: #86a0c4;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.footer-socials a:hover {
+  color: #2D2A55;
+}
+
+.footer-bottom {
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 30px;
+  color: #677299;
+}
+
+.footer-links a {
+  position: relative;
+  color: #2D2A55;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  padding-bottom: 4px;
+}
+
+.footer-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  height: 2px;
+  background-color: #2D2A55;
+  transition: width 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #353359;
+}
+
+.footer-links a:hover::after {
+  width: 100%;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-links, .footer-socials {
+    justify-content: center;
+  }
+
+  .footer-socials a {
+    margin: 0 10px;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -1515,6 +1623,7 @@
       <div class="menu-title" onclick="navigateTo('Participer')">Participer</div>
       <div class="menu-title" onclick="navigateTo('Forum')">Forum</div>
       <div class="menu-title" onclick="navigateTo('Paramètres')">Paramètres</div>
+      <div class="menu-title" onclick="navigateTo('Nous contacter')">Nous contacter</div>
     </div>
 
     <!-- Système d'authentification -->
@@ -2154,5 +2263,32 @@ function checkScroll() {
   }
 }
   </script>
+
+  <footer class="site-footer">
+  <div class="footer-content">
+    <div class="footer-logo">
+      <img src="Logo_Grand_Sans_Fond_AIndex.png" alt="Logo AIndex">
+    </div>
+    <div class="footer-links">
+      <a href="#">Accueil</a>
+      <a href="#">À propos</a>
+            <a href="#">Comprendre</a>
+      <a href="#">Explorer</a>
+            <a href="#">Participer</a>
+      <a href="#">Forum</a>
+            <a href="#">Paramètres</a>
+      <a href="#">Contact</a>
+    </div>
+    <div class="footer-socials">
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-linkedin"></i></a>
+      <a href="#"><i class="fab fa-github"></i></a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2025 AIndex. Tous droits réservés.</p>
+  </div>
+</footer>
+
 </body>
 </html>
