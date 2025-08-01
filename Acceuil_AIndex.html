@@ -243,7 +243,7 @@
 
     .input-container input[type="text"]:focus ~ .label,
     .input-container input[type="text"]:valid ~ .label {
-      top: -20px;
+      top: -25px;
       font-size: 20px;
       color: #333333;
     }
@@ -1623,7 +1623,6 @@
       <div class="menu-title" onclick="navigateTo('Participer')">Participer</div>
       <div class="menu-title" onclick="navigateTo('Forum')">Forum</div>
       <div class="menu-title" onclick="navigateTo('Paramètres')">Paramètres</div>
-      <div class="menu-title" onclick="navigateTo('Nous contacter')">Nous contacter</div>
     </div>
 
     <!-- Système d'authentification -->
@@ -2010,12 +2009,30 @@
 });
 
         // Navigation
-    function navigateTo(page) {
-      console.log(`Navigation vers: ${page}`);
-      // Ici vous ajouterez la logique de navigation réelle
-      menuToggle.checked = false;
-      body.classList.remove('menu-open');
+function navigateTo(page) {
+    console.log(`Navigation vers: ${page}`);
+
+    // Fermer le menu (comportement existant)
+    menuToggle.checked = false;
+    body.classList.remove('menu-open');
+
+    // Redirection selon le nom de la section
+    switch (page) {
+      case 'Explorer':
+        window.location.href = 'Explorer_AIndex.html';
+        break;
+      case 'Forum':
+        window.location.href = 'Forum.html'; // exemple, adapte si besoin
+        break;
+      default:
+        // Scroll vers la section correspondante (comme "À propos", etc.)
+        const sectionElement = document.getElementById(page);
+        if (sectionElement) {
+          sectionElement.scrollIntoView({ behavior: 'smooth' });
+        }
+        break;
     }
+  }
 
     // Animation des chiffres
 function animateStats() {
