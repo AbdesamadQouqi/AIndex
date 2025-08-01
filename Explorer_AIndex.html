@@ -779,6 +779,146 @@
         padding: 30px 20px;
       }
     }
+
+.ia-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 0 20px;
+}
+
+.ia-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  padding: 20px;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid #f0f0f0;
+}
+
+.ia-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+.ia-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ia-type-badge {
+  background-color: #2D2A55;
+  color: white;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: bold;
+}
+
+.ia-fav {
+  cursor: pointer;
+  color: #bbb;
+  font-size: 18px;
+  transition: color 0.3s ease;
+}
+
+.ia-fav.active {
+  color: #e94e77;
+}
+
+.ia-card-title {
+  font-size: 1.25em;
+  color: #2D2A55;
+  font-weight: 600;
+  margin: 0;
+}
+
+.ia-card p {
+  color: #13182c;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-size: 0.95em;
+  margin: 0;
+  text-align: left;
+}
+
+.ia-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9em;
+  color: #444b6f;
+}
+
+.ia-meta i {
+  color: #a0a4b8;
+}
+
+.ia-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ia-tag {
+  background: #f1f3f6;
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: #2D2A55;
+  font-weight: 500;
+}
+
+.ia-link {
+  margin-top: auto;
+  text-align: center;
+}
+
+.ia-link a {
+  display: inline-block;
+  padding: 10px 16px;
+  background-color: #2D2A55;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.9em;
+  transition: background 0.3s ease;
+}
+
+.ia-link a:hover {
+  background-color: #1f1c3f;
+}
+
+.ia-fav {
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.3s ease;
+  color: #ccc;
+}
+
+.ia-fav.active {
+  color: #e63946;
+  animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.4);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+
   </style>
 </head>
 <body>
@@ -953,6 +1093,9 @@
           </select>
         </div>
       </div>
+
+      <div id="ia-cards-container" class="ia-cards-container"></div>
+
     </section>
 
     <footer class="site-footer">
@@ -1089,6 +1232,344 @@
     filterButton.addEventListener('click', () => {
       filtersPanel.classList.toggle('visible');
     });
+
+const iaList = [
+  {
+    nom: "GPT-4 Turbo",
+    type: "LLM",
+    description: "Modèle de langage multimodal avancé d’OpenAI avec vision.",
+    createur: "OpenAI",
+    annee: "2023",
+    prix: "Payant",
+    note: 4.8,
+    tags: ["Multimodal", "Vision", "Code", "Chatbot"],
+    logo: "chatgpt_Logo.jpg",
+    lien: "https://openai.com/chatgpt"
+  },
+  {
+    nom: "Claude 3",
+    type: "LLM",
+    description: "IA d’Anthropic axée sur la sûreté, la compréhension et la transparence.",
+    createur: "Anthropic",
+    annee: "2024",
+    prix: "Freemium",
+    note: 4.6,
+    tags: ["Chatbot", "Analyse", "Rédaction"],
+    logo: "Claude_AI.png",
+    lien: "https://claude.ai"
+  },
+  {
+    nom: "Mistral 7B",
+    type: "LLM",
+    description: "Modèle open-source performant, optimisé pour vitesse et coût.",
+    createur: "Mistral AI",
+    annee: "2023",
+    prix: "Gratuit",
+    note: 4.4,
+    tags: ["Open Source", "Code", "Texte"],
+    logo: "mistral_7B.png",
+    lien: "https://mistral.ai/news/announcing-mistral-7b"
+  },
+  {
+    nom: "LLaMA 3",
+    type: "LLM",
+    description: "Modèle open-source de Meta, disponible en 8B et 70B paramètres.",
+    createur: "Meta AI",
+    annee: "2024",
+    prix: "Gratuit",
+    note: 4.3,
+    tags: ["Recherche", "Code", "Open Source"],
+    logo: "meta_2.png",
+    lien: "https://ai.meta.com/llama/"
+  },
+  {
+    nom: "Gemini 1.5",
+    type: "LLM",
+    description: "Modèle de Google DeepMind, multimodal avec long contexte.",
+    createur: "Google DeepMind",
+    annee: "2024",
+    prix: "Freemium",
+    note: 4.5,
+    tags: ["Recherche", "Multimodal", "Analyse"],
+    logo: "gemini.png",
+    lien: "https://deepmind.google/technologies/gemini/"
+  },
+  {
+    nom: "Perplexity AI",
+    type: "Moteur IA",
+    description: "IA de recherche conversationnelle basée sur LLM avec sources.",
+    createur: "Perplexity",
+    annee: "2023",
+    prix: "Freemium",
+    note: 4.7,
+    tags: ["Recherche", "Navigation", "Connaissance"],
+    logo: "perplexity_AI.png",
+    lien: "https://www.perplexity.ai/"
+  },
+  {
+    nom: "Runway Gen-2",
+    type: "Générateur Vidéo",
+    description: "IA générative de vidéos à partir de texte, image ou vidéo.",
+    createur: "Runway",
+    annee: "2023",
+    prix: "Payant",
+    note: 4.2,
+    tags: ["Vidéo", "Création", "Multimodal"],
+    logo: "runway.jpg",
+    lien: "https://runwayml.com"
+  },
+  {
+    nom: "Leonardo AI",
+    type: "Générateur Image",
+    description: "Outil de création d’images stylisées pour les artistes et designers.",
+    createur: "Leonardo",
+    annee: "2023",
+    prix: "Freemium",
+    note: 4.4,
+    tags: ["Art", "Image", "Création", "Design"],
+    logo: "leonardo_AI.png",
+    lien: "https://leonardo.ai"
+  },
+  {
+    nom: "Suno v3",
+    type: "Générateur Musique",
+    description: "IA musicale générant des chansons originales à partir de texte.",
+    createur: "Suno AI",
+    annee: "2024",
+    prix: "Freemium",
+    note: 4.6,
+    tags: ["Musique", "Audio", "Création"],
+    logo: "suno.png",
+    lien: "https://suno.ai"
+  },
+  {
+    nom: "Notion AI",
+    type: "Assistant IA",
+    description: "Assistant intégré à Notion pour résumer, rédiger et traduire.",
+    createur: "Notion",
+    annee: "2023",
+    prix: "Payant",
+    note: 4.1,
+    tags: ["Productivité", "Texte", "Organisation"],
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Notion-logo.svg/512px-Notion-logo.svg.png",
+    lien: "https://www.notion.so/product/ai"
+  },
+  {
+    nom: "Midjourney v6",
+    type: "Générateur Image",
+    description: "Génération d'images artistiques ultra-réalistes à partir de prompts textuels.",
+    createur: "Midjourney",
+    annee: "2024",
+    prix: "Payant",
+    note: 4.9,
+    tags: ["Art", "Design", "Concept Art"],
+    logo: "midjourney.png",
+    lien: "https://www.midjourney.com"
+  },
+  {
+    nom: "Stable Diffusion 3",
+    type: "Générateur Image",
+    description: "Modèle open-source de génération d'images avec contrôle avancé.",
+    createur: "Stability AI",
+    annee: "2024",
+    prix: "Gratuit",
+    note: 4.5,
+    tags: ["Open Source", "Photo", "Customisable"],
+    logo: "stability_ai.png",
+    lien: "https://stability.ai"
+  },
+  {
+    nom: "ElevenLabs",
+    type: "Synthèse Vocale",
+    description: "Synthèse vocale IA ultra-réaliste avec émotions et multiples langues.",
+    createur: "ElevenLabs",
+    annee: "2023",
+    prix: "Freemium",
+    note: 4.7,
+    tags: ["Audio", "Voix", "Podcast"],
+    logo: "eleven_labs.png",
+    lien: "https://elevenlabs.io"
+  },
+  {
+    nom: "HeyGen",
+    type: "Avatar Vidéo",
+    description: "Création de vidéos avec avatars parlants à partir de texte.",
+    createur: "HeyGen",
+    annee: "2023",
+    prix: "Payant",
+    note: 4.3,
+    tags: ["Présentation", "Marketing", "Avatar"],
+    logo: "heygen_logo.png",
+    lien: "https://www.heygen.com"
+  },
+  {
+    nom: "Pika Labs",
+    type: "Générateur Vidéo",
+    description: "Génération et édition de vidéos à partir de texte ou image.",
+    createur: "Pika",
+    annee: "2023",
+    prix: "Freemium",
+    note: 4.4,
+    tags: ["Animation", "VFX", "Court-métrage"],
+    logo: "pika_logo.png",
+    lien: "https://pika.art"
+  },
+  {
+    nom: "DevRev AI",
+    type: "IA Développement",
+    description: "Assistant de codage avec compréhension du contexte projet.",
+    createur: "DevRev",
+    annee: "2024",
+    prix: "Payant",
+    note: 4.6,
+    tags: ["Programmation", "Debug", "Productivité"],
+    logo: "deverev_logo.png",
+    lien: "https://devrev.ai"
+  },
+  {
+    nom: "Pi",
+    type: "Assistant Personnel",
+    description: "Assistant conversationnel empathique par Inflection AI.",
+    createur: "Inflection",
+    annee: "2023",
+    prix: "Gratuit",
+    note: 4.2,
+    tags: ["Coach", "Bien-être", "Dialogue"],
+    logo: "pi_ai.png",
+    lien: "https://pi.ai"
+  },
+  {
+    nom: "Otter.ai",
+    type: "Transcription",
+    description: "Transcription automatique de réunions avec analyse intelligente.",
+    createur: "Otter",
+    annee: "2022",
+    prix: "Freemium",
+    note: 4.5,
+    tags: ["Productivité", "Réunion", "Notes"],
+    logo: "otter_logo.png",
+    lien: "https://otter.ai"
+  },
+  {
+    nom: "Kobold AI",
+    type: "LLM Local",
+    description: "Suite pour exécuter des modèles de langage localement.",
+    createur: "KoboldAI",
+    annee: "2023",
+    prix: "Gratuit",
+    note: 4.0,
+    tags: ["Open Source", "Jeu", "Storytelling"],
+    logo: "kobold_logo.png",
+    lien: "https://koboldai.net"
+  },
+  {
+    nom: "Character.AI",
+    type: "Chatbot RP",
+    description: "Plateforme de chatbots personnalisables avec personnalités.",
+    createur: "Character Technologies",
+    annee: "2022",
+    prix: "Freemium",
+    note: 4.3,
+    tags: ["Divertissement", "Jeu", "Social"],
+    logo: "character_ai_logo.png",
+    lien: "https://beta.character.ai"
+  },
+  {
+    nom: "Synthesia",
+    type: "Vidéo IA",
+    description: "Création de vidéos avec présentateurs virtuels en 120+ langues.",
+    createur: "Synthesia",
+    annee: "2023",
+    prix: "Payant",
+    note: 4.4,
+    tags: ["Formation", "Corporate", "E-learning"],
+    logo: "synthesia_logo.png",
+    lien: "https://www.synthesia.io"
+  },
+  {
+    nom: "Poe",
+    type: "Plateforme LLM",
+    description: "Accès à multiples modèles (Claude, GPT, etc.) en un seul endroit.",
+    createur: "Quora",
+    annee: "2023",
+    prix: "Freemium",
+    note: 4.5,
+    tags: ["Comparaison", "Chatbots", "Multi-modèles"],
+    logo: "poe_logo.png",
+    lien: "https://poe.com"
+  },
+  {
+    nom: "DeepL Write",
+    type: "Assistant Rédaction",
+    description: "Correction et amélioration avancée de textes en plusieurs langues.",
+    createur: "DeepL",
+    annee: "2023",
+    prix: "Freemium",
+    note: 4.7,
+    tags: ["Traduction", "Grammaire", "Style"],
+    logo: "deepl_logo.png",
+    lien: "https://www.deepl.com/write"
+  },
+  {
+    nom: "Bard",
+    type: "LLM",
+    description: "Assistant conversationnel de Google intégrant la recherche.",
+    createur: "Google",
+    annee: "2023",
+    prix: "Gratuit",
+    note: 4.2,
+    tags: ["Recherche", "Productivité", "Google"],
+    logo: "bard_logo.svg",
+    lien: "https://bard.google.com"
+  },
+  {
+    nom: "Cohere",
+    type: "LLM Entreprise",
+    description: "Modèles de langage pour applications business sécurisées.",
+    createur: "Cohere",
+    annee: "2023",
+    prix: "Payant",
+    note: 4.4,
+    tags: ["Business", "Sécurité", "Custom"],
+    logo: "cohere_logo_2.png",
+    lien: "https://cohere.com"
+  }
+];
+
+
+  function createIACard(ia) {
+  const tagsHTML = ia.tags.map(tag => `<span class="ia-tag">${tag}</span>`).join("");
+
+  return `
+    <div class="ia-card">
+      <div class="ia-card-header">
+        <span class="ia-type-badge">${ia.type}</span>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <i class="fas fa-heart ia-fav" onclick="this.classList.toggle('active')"></i>
+          <a href="${ia.lien}" target="_blank" title="Ouvrir l'IA" style="color: inherit;">
+            <i class="fas fa-arrow-up-right-from-square"></i>
+          </a>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <img src="${ia.logo}" alt="logo ${ia.nom}" style="height: 28px; width: auto;" />
+        <h3 class="ia-card-title">${ia.nom}</h3>
+      </div>
+
+      <p>${ia.description}</p>
+      <div class="ia-meta"><i class="fas fa-user"></i>${ia.createur}</div>
+      <div class="ia-meta"><i class="fas fa-calendar-alt"></i>${ia.annee}</div>
+      <div class="ia-meta"><i class="fas fa-star" style="color: gold;"></i>${ia.note}</div>
+      <div class="ia-meta"><i class="fas fa-dollar-sign"></i>${ia.prix}</div>
+      <div class="ia-tags">${tagsHTML}</div>
+    </div>
+  `;
+}
+
+  const container = document.getElementById("ia-cards-container");
+  container.innerHTML = iaList.map(createIACard).join("");
+
   </script>
 </body>
 </html>
