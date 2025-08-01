@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AIndex | Explorer</title>
+  <link rel="icon" type="image/png" href="image_onglet_AIndex.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #f3f7fa;
+      transition: filter 0.5s ease, backdrop-filter 0.5s ease;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: rgba(243, 247, 250, 0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #353359;
+      width: 100%;
+    }
+
+    .menu-left, .logo-center, .login-right {
+      flex: 1;
+    }
+
+    .logo-center {
+      text-align: center;
+    }
+
+    .logo-center img {
+      height: 65px;
+      max-width: 100%;
+    }
+
+    .login-right {
+      text-align: right;
+    }
+
+    .login-right img {
+      height: 50px;
+      max-width: 100%;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .login-right img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Menu Hamburger */
+    .hamburger {
+      cursor: pointer;
+      display: inline-block;
+      z-index: 200;
+    }
+
+    .hamburger input {
+      display: none;
+    }
+
+    .hamburger svg {
+      height: 3em;
+      transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+      max-width: 100%;
+    }
+
+    .line {
+      fill: none;
+      stroke: #353359;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 3;
+      transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
+                  stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .line-top-bottom {
+      stroke-dasharray: 12 63;
+    }
+
+    .hamburger input:checked + svg {
+      transform: rotate(-45deg);
+    }
+
+    .hamburger input:checked + svg .line-top-bottom {
+      stroke-dasharray: 20 300;
+      stroke-dashoffset: -32.42;
+    }
+
+    /* Contenu principal */
+    .page-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .hero-section {
+      text-align: center;
+      padding: 175px 20px 80px;
+      min-height: calc(100vh - 175px);
+      color: #2D2A55;
+      transition: filter 0.5s ease;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+
+    .menu-open .hero-section, .auth-active .hero-section {
+      filter: blur(8px);
+    }
+
+    .hero-section h1 {
+      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+      font-size: 4.5em;
+      margin-bottom: 40px;
+    }
+    
+    .hero-section p {
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+      font-size: 1.8em;
+      color: #677299;
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+
+    /* Menu latéral épuré */
+    .menu-titles {
+      position: fixed;
+      top: 50%;
+      left: 5%;
+      transform: translateY(-50%);
+      z-index: 90;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      width: auto;
+    }
+
+    .menu-open .menu-titles {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .menu-title {
+      font-size: 1.6em;
+      color: #353359;
+      margin: 20px 0;
+      padding: 8px 15px;
+      transform: translateX(-30px);
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.2, 0, 0, 1);
+      cursor: pointer;
+      position: relative;
+      width: fit-content;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+    }
+
+    .menu-title::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 15px;
+      width: 0;
+      height: 2px;
+      background-color: #353359;
+      transition: width 0.4s ease;
+    }
+
+    .menu-title:hover {
+      color: #2D2A55;
+    }
+
+    .menu-title:hover::before {
+      width: calc(100% - 30px);
+    }
+
+    .menu-open .menu-title {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    /* Délais d'apparition */
+    .menu-title:nth-child(1) { transition-delay: 0.1s; }
+    .menu-title:nth-child(2) { transition-delay: 0.15s; }
+    .menu-title:nth-child(3) { transition-delay: 0.2s; }
+    .menu-title:nth-child(4) { transition-delay: 0.25s; }
+    .menu-title:nth-child(5) { transition-delay: 0.3s; }
+    .menu-title:nth-child(6) { transition-delay: 0.35s; }
+    .menu-title:nth-child(7) { transition-delay: 0.4s; }
+    .menu-title:nth-child(8) { transition-delay: 0.45s; }
+
+    /* Barre de recherche */
+    .input-container {
+      position: relative;
+      margin: 0 auto;
+      width: 800px;
+      max-width: 90%;
+    }
+
+    .input-container input[type="text"] {
+      font-size: 17px;
+      width: 100%;
+      border: none;
+      border-bottom: 2px solid #9dabb5;
+      padding: 4px 0;
+      background-color: transparent;
+      outline: none;
+      color: #5d6e95;
+    }
+
+    .input-container .label {
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: #9dabb5;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .input-container input[type="text"]:focus ~ .label,
+    .input-container input[type="text"]:valid ~ .label {
+      top: -25px;
+      font-size: 20px;
+      color: #333333;
+    }
+
+    .input-container .underline {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      width: 100%;
+      background-color: #2D2A55;
+      transform: scaleX(0);
+      transition: all 0.3s ease;
+    }
+
+    .input-container input[type="text"]:focus ~ .underline,
+    .input-container input[type="text"]:valid ~ .underline {
+      transform: scaleX(1);
+    }
+
+    /* Overlay flou pour menu */
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(243, 247, 250, 0.2);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 80;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .menu-open .menu-overlay {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Système d'authentification */
+    .auth-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(243, 247, 250, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .auth-active .auth-overlay {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .auth-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      width: 100%;
+      max-width: 350px;
+    }
+
+    .auth-active .auth-container {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .auth-card {
+      background: rgb(253, 254, 255);
+      border-radius: 16px;
+      box-shadow: 0 50px 50px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+
+    .auth-forms-container {
+      display: flex;
+      width: 200%;
+      transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    .auth-form {
+      width: 50%;
+      padding: 40px;
+      transition: opacity 0.3s ease;
+    }
+
+    .auth-form.inactive {
+      opacity: 0;
+    }
+
+    .auth-form.active {
+      opacity: 1;
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .auth-header h3 {
+      color: #2D2A55;
+      font-size: 1.8em;
+      margin-bottom: 10px;
+    }
+
+    .auth-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+      z-index: 1001;
+    }
+
+    .auth-close:hover {
+      opacity: 1;
+    }
+
+    .auth-close::before, 
+    .auth-close::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 2px;
+      background: #353359;
+      transform-origin: center;
+    }
+
+    .auth-close::before {
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .auth-close::after {
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+
+    .auth-input-group {
+      position: relative;
+      margin-bottom: 30px;
+      width: 100%;
+    }
+
+    .auth-input {
+      width: 100%;
+      border: none;
+      border-bottom: 2px solid #9dabb5;
+      padding: 8px 0;
+      background-color: transparent;
+      outline: none;
+      color: #5d6e95;
+      font-size: 16px;
+    }
+
+    .auth-label {
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: #9dabb5;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      font-size: 16px;
+    }
+
+    .auth-input:focus ~ .auth-label,
+    .auth-input:valid ~ .auth-label {
+      top: -20px;
+      font-size: 14px;
+      color: #2D2A55;
+    }
+
+    .auth-underline {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      width: 100%;
+      background-color: #2D2A55;
+      transform: scaleX(0);
+      transition: all 0.3s ease;
+    }
+
+    .auth-input:focus ~ .auth-underline,
+    .auth-input:valid ~ .auth-underline {
+      transform: scaleX(1);
+    }
+
+    .auth-btn {
+      width: 100%;
+      padding: 12px;
+      background: #86a0c4;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-top: 20px;
+    }
+
+    .auth-btn:hover {
+      background: #353359;
+    }
+
+    .auth-switch {
+      text-align: center;
+      margin-top: 20px;
+      color: #677299;
+    }
+
+    .auth-switch span {
+      color: #2D2A55;
+      cursor: pointer;
+      text-decoration: underline;
+      transition: color 0.2s ease;
+    }
+
+    .auth-switch span:hover {
+      color: #353359;
+    }
+
+    /* Barre de recherche et filtres */
+    .search-filter-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 12px;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      margin-top: 40px;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+
+    .search-filter-wrapper .input-container {
+      flex: 1;
+    }
+
+    .filter-button {
+      background-color: transparent;
+      border: none;
+      color: #2D2A55;
+      font-size: 18px;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.25s ease, transform 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .filter-button:hover {
+      transform: scale(1.2);
+    }
+
+    .filter-button i {
+      font-size: 20px;
+      display: inline-block;
+      transition: transform 0.4s ease-in-out;
+    }
+
+    .filter-button:hover i {
+      animation: wiggle 0.6s ease-in-out infinite;
+    }
+
+    @keyframes wiggle {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      25% {
+        transform: translateX(1px);
+      }
+      50% {
+        transform: translateX(-1px);
+      }
+      75% {
+        transform: translateX(0.5px);
+      }
+    }
+
+    .filters-panel {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 24px;
+      margin: 30px auto 0;
+      max-width: 1000px;
+      padding: 0 20px;
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      flex-wrap: wrap;
+    }
+
+    .filters-panel.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .filter-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 160px;
+      flex: 1 1 180px;
+    }
+
+    .filter-item label {
+      font-size: 13px;
+      color: #2D2A55;
+      opacity: 0.8;
+      font-weight: 500;
+      text-align: left;
+    }
+
+    .filter-item select {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 14px;
+      border: 1px solid #c9cacc;
+      border-radius: 10px;
+      background-color: transparent;
+      color: #2D2A55;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='%232D2A55' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 12px;
+      text-overflow: ellipsis;
+    }
+
+    .filter-item select:focus {
+      outline: none;
+      border-color: #2D2A55;
+    }
+
+    /* Footer */
+    .site-footer {
+      background-color: rgba(243, 247, 250, 0.5);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 40px 20px 20px;
+      font-family: 'Arial', sans-serif;
+      color: #2D2A55;
+      border-top: 1px solid #d9e0e8;
+      margin-top: 80px;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .footer-logo img {
+      height: 50px;
+      filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.05));
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      color: #2D2A55;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    .footer-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0%;
+      height: 2px;
+      background-color: #2D2A55;
+      transition: width 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: #353359;
+    }
+
+    .footer-links a:hover::after {
+      width: 100%;
+    }
+
+    .footer-socials a {
+      margin-left: 15px;
+      color: #86a0c4;
+      font-size: 1.2rem;
+      transition: color 0.3s ease;
+    }
+
+    .footer-socials a:hover {
+      color: #2D2A55;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      font-size: 0.9rem;
+      margin-top: 30px;
+      color: #677299;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .hero-section h1 {
+        font-size: 3.5em;
+      }
+      
+      .hero-section p {
+        font-size: 1.5em;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .menu-titles {
+        left: 20px;
+      }
+      
+      .menu-title {
+        font-size: 1.4em;
+        margin: 15px 0;
+      }
+      
+      .hero-section {
+        min-height: calc(100vh - 150px);
+        padding: 150px 20px 60px;
+      }
+      
+      .hero-section h1 {
+        font-size: 3em;
+      }
+      
+      .hero-section p {
+        font-size: 1.4em;
+      }
+
+      .filters-panel {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter-item {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .footer-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .footer-links, .footer-socials {
+        justify-content: center;
+      }
+
+      .footer-socials a {
+        margin: 0 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .menu-titles {
+        left: 15px;
+      }
+      
+      .menu-title {
+        font-size: 1.2em;
+        margin: 12px 0;
+        padding: 6px 10px;
+      }
+      
+      .hero-section {
+        min-height: calc(100vh - 120px);
+        padding: 120px 20px 40px;
+      }
+      
+      .hero-section h1 {
+        font-size: 2.2em;
+        margin-bottom: 20px;
+      }
+      
+      .hero-section p {
+        font-size: 1.1em;
+        margin-bottom: 30px;
+      }
+      
+      .input-container {
+        width: 90%;
+        margin-top: 40px;
+      }
+
+      .auth-card {
+        width: 90%;
+      }
+
+      .auth-form {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <header>
+      <div class="menu-left">
+        <label class="hamburger">
+          <input type="checkbox" id="menu-toggle">
+          <svg viewBox="0 0 32 32">
+            <path class="line line-top-bottom" d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"/>
+            <path class="line" d="M7 16 27 16"/>
+          </svg>
+        </label>
+      </div>
+
+      <div class="logo-center">
+        <img src="Logo_Grand_Sans_Fond_AIndex.png" alt="Logo AI Index">
+      </div>
+
+      <div class="login-right">
+        <img src="image_login_AIndex.png" alt="Login" id="login-icon">
+      </div>
+    </header>
+
+    <!-- Overlay flou pour menu -->
+    <div class="menu-overlay" id="menu-overlay"></div>
+
+    <!-- Menu latéral épuré -->
+    <div class="menu-titles">
+      <div class="menu-title" onclick="navigateTo('Accueil')">Accueil</div>
+      <div class="menu-title" onclick="navigateTo('À propos')">À propos</div>
+      <div class="menu-title" onclick="navigateTo('Comprendre')">Comprendre</div>
+      <div class="menu-title" onclick="navigateTo('Explorer')">Explorer</div>
+      <div class="menu-title" onclick="navigateTo('Participer')">Participer</div>
+      <div class="menu-title" onclick="navigateTo('Forum')">Forum</div>
+      <div class="menu-title" onclick="navigateTo('Paramètres')">Paramètres</div>
+    </div>
+
+    <!-- Système d'authentification -->
+    <div class="auth-overlay" id="auth-overlay"></div>
+    
+    <div class="auth-container" id="auth-container">
+      <div class="auth-card">
+        <div class="auth-close" id="auth-close"></div>
+        
+        <div class="auth-forms-container" id="forms-container">
+          <!-- Formulaire de connexion -->
+          <form class="auth-form active" id="login-form">
+            <div class="auth-header">
+              <h3>Connexion</h3>
+            </div>
+            
+            <div class="auth-input-group">
+              <input type="email" class="auth-input" id="login-email" required>
+              <label for="login-email" class="auth-label">Adresse e-mail</label>
+              <div class="auth-underline"></div>
+            </div>
+            
+            <div class="auth-input-group">
+              <input type="password" class="auth-input" id="login-password" required>
+              <label for="login-password" class="auth-label">Mot de passe</label>
+              <div class="auth-underline"></div>
+            </div>
+            
+            <button type="submit" class="auth-btn">Se connecter</button>
+            
+            <div class="auth-switch">
+              Pas de compte ? <span id="switch-to-signup">Je m'inscris</span>
+            </div>
+          </form>
+          
+          <!-- Formulaire d'inscription -->
+          <form class="auth-form inactive" id="signup-form">
+            <div class="auth-header">
+              <h3>Inscription</h3>
+            </div>
+            
+            <div class="auth-input-group">
+              <input type="text" class="auth-input" id="signup-name" required>
+              <label for="signup-name" class="auth-label">Nom</label>
+              <div class="auth-underline"></div>
+            </div>
+            
+            <div class="auth-input-group">
+              <input type="email" class="auth-input" id="signup-email" required>
+              <label for="signup-email" class="auth-label">Adresse e-mail</label>
+              <div class="auth-underline"></div>
+            </div>
+            
+            <div class="auth-input-group">
+              <input type="password" class="auth-input" id="signup-password" required>
+              <label for="signup-password" class="auth-label">Mot de passe</label>
+              <div class="auth-underline"></div>
+            </div>
+            
+            <div class="auth-input-group">
+              <input type="password" class="auth-input" id="signup-confirm" required>
+              <label for="signup-confirm" class="auth-label">Confirmer le mot de passe</label>
+              <div class="auth-underline"></div>
+            </div>
+            
+            <button type="submit" class="auth-btn">S'inscrire</button>
+            
+            <div class="auth-switch">
+              Déjà un compte ? <span id="switch-to-login">Je me connecte</span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <section class="hero-section">
+      <h1>Explorez le répertoire.</h1>
+      <p>Comparez, filtrez et découvrez la solution IA la plus adaptée à vos besoins.</p>
+
+      <div class="search-filter-wrapper">
+        <div class="input-container">
+          <input type="text" id="search" required />
+          <label for="search" class="label">Rechercher ...</label>
+          <div class="underline"></div>
+        </div>
+        <button id="filter-button" class="filter-button" title="Filtres">
+          <i class="fas fa-sliders-h"></i>
+        </button>
+      </div>
+
+      <div id="filters-panel" class="filters-panel">
+        <div class="filter-item">
+          <label for="type">Type</label>
+          <select id="type">
+            <option>Tous</option>
+            <option>Générative</option>
+            <option>NLP</option>
+            <option>Vision</option>
+            <option>Audio</option>
+            <option>Code</option>
+          </select>
+        </div>
+
+        <div class="filter-item">
+          <label for="usecase">Usage</label>
+          <select id="usecase">
+            <option>Tous</option>
+            <option>Chatbot</option>
+            <option>Résumé</option>
+            <option>Traduction</option>
+            <option>Image</option>
+            <option>Voix</option>
+            <option>Recherche</option>
+          </select>
+        </div>
+
+        <div class="filter-item">
+          <label for="access">Accès</label>
+          <select id="access">
+            <option>Tous</option>
+            <option>Web</option>
+            <option>App</option>
+            <option>API</option>
+            <option>Extension</option>
+          </select>
+        </div>
+
+                <div class="filter-item">
+          <label for="price">Prix</label>
+          <select id="price">
+            <option>Tous</option>
+            <option>Gratuit</option>
+            <option>Freemium</option>
+            <option>Payant</option>
+            <option>Open-source</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="image_onglet_AIndex.png" alt="Logo AIndex">
+        </div>
+        <div class="footer-links">
+          <a href="#">Accueil</a>
+          <a href="#">À propos</a>
+          <a href="#">Comprendre</a>
+          <a href="#">Explorer</a>
+          <a href="#">Participer</a>
+          <a href="#">Forum</a>
+          <a href="#">Paramètres</a>
+          <a href="#">Contact</a>
+        </div>
+        <div class="footer-socials">
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+          <a href="#"><i class="fab fa-github"></i></a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 AIndex. Tous droits réservés.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Gestion du menu hamburger
+    const menuToggle = document.getElementById('menu-toggle');
+    const body = document.body;
+    const menuOverlay = document.getElementById('menu-overlay');
+
+    menuToggle.addEventListener('change', function() {
+      if (this.checked) {
+        body.classList.add('menu-open');
+      } else {
+        body.classList.remove('menu-open');
+      }
+    });
+
+    // Fermeture du menu
+    menuOverlay.addEventListener('click', function() {
+      menuToggle.checked = false;
+      body.classList.remove('menu-open');
+    });
+
+    // Gestion de l'authentification
+    const loginIcon = document.getElementById('login-icon');
+    const authContainer = document.getElementById('auth-container');
+    const authOverlay = document.getElementById('auth-overlay');
+    const authClose = document.getElementById('auth-close');
+    const formsContainer = document.getElementById('forms-container');
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    const switchToSignup = document.getElementById('switch-to-signup');
+    const switchToLogin = document.getElementById('switch-to-login');
+
+    // Ouverture/fermeture
+    loginIcon.addEventListener('click', () => {
+      body.classList.add('auth-active');
+      showLoginForm();
+    });
+
+    authOverlay.addEventListener('click', closeAuth);
+    authClose.addEventListener('click', closeAuth);
+
+    function closeAuth() {
+      body.classList.remove('auth-active');
+    }
+
+    // Transition entre les formulaires
+    function showLoginForm() {
+      formsContainer.style.transform = 'translateX(0)';
+      loginForm.classList.remove('inactive');
+      loginForm.classList.add('active');
+      signupForm.classList.remove('active');
+      signupForm.classList.add('inactive');
+    }
+
+    function showSignupForm() {
+      formsContainer.style.transform = 'translateX(-50%)';
+      signupForm.classList.remove('inactive');
+      signupForm.classList.add('active');
+      loginForm.classList.remove('active');
+      loginForm.classList.add('inactive');
+    }
+
+    // Changement entre login/signup
+    switchToSignup.addEventListener('click', (e) => {
+      e.preventDefault();
+      showSignupForm();
+    });
+    
+    switchToLogin.addEventListener('click', (e) => {
+      e.preventDefault();
+      showLoginForm();
+    });
+
+    // Navigation
+    function navigateTo(page) {
+      console.log(`Navigation vers: ${page}`);
+      // Ici vous ajouterez la logique de navigation réelle
+      menuToggle.checked = false;
+      body.classList.remove('menu-open');
+    }
+
+    // Fermeture du menu au scroll
+    let lastScrollPosition = 0;
+    let menuScrollTimeout;
+
+    window.addEventListener('scroll', function() {
+      if (menuToggle.checked) {
+        const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+        
+        clearTimeout(menuScrollTimeout);
+        
+        menuScrollTimeout = setTimeout(() => {
+          if (Math.abs(currentScrollPosition - lastScrollPosition) > 10) {
+            menuToggle.checked = false;
+            body.classList.remove('menu-open');
+          }
+          lastScrollPosition = currentScrollPosition;
+        }, 50);
+      }
+    });
+
+    // Gestion des filtres
+    const filterButton = document.getElementById('filter-button');
+    const filtersPanel = document.getElementById('filters-panel');
+
+    filterButton.addEventListener('click', () => {
+      filtersPanel.classList.toggle('visible');
+    });
+  </script>
+</body>
+</html>
